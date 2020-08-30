@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
 import {
   Box,
   Button,
@@ -10,22 +8,11 @@ import {
   Link,
   TextField,
   Typography,
-  makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import {POSTLOGIN} from 'src/api/caller';
 import {LOGIN_ENDPOINT} from 'src/api/endpoint';
 
-
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    height: '100%',
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
-  }
-}));
 
 export default class LoginView extends React.Component {
 
@@ -34,22 +21,19 @@ export default class LoginView extends React.Component {
     password: '',
   }
   handleLogin = async () =>{
-    await POSTLOGIN(LOGIN_ENDPOINT,{},{username: this.state.username, password: this.state.password})
+    await POSTLOGIN(LOGIN_ENDPOINT, {}, {username: this.state.username, password: this.state.password})
       .then(res =>{
         if(res.status === 200){
           sessionStorage.jwt = res.headers.get("Authorization");
           console.log(res);
-          window.location = "/app/dashboard"
+         window.location = "/app/dashboard"
         }
       })
   }
   render(){
-    // const classes = useStyles();
-    // const navigate = useNavigate();
     const {username, password} = this.state
   return (
     <Page
-      // className={classes.root}
       title="Login"
     >
       <Box
@@ -59,25 +43,6 @@ export default class LoginView extends React.Component {
         justifyContent="center"
       >
         <Container maxWidth="sm">
-          <Formik
-            // validationSchema={Yup.object().shape({
-            //   username: Yup.string().username('Must be a valid username').max(255).required('Username is required'),
-            //   password: Yup.string().max(255).required('Password is required')
-            // })}
-            // onSubmit={() => {
-            //   navigate('/app/dashboard', { replace: true });
-            // }}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values
-            }) => (
-              <form onSubmit={handleSubmit}>
                 <Box mb={3}>
                   <Typography
                     color="textPrimary"
@@ -105,7 +70,6 @@ export default class LoginView extends React.Component {
                     <Button
                       color="primary"
                       fullWidth
-                      onClick={handleSubmit}
                       size="large"
                       variant="contained"
                     >
@@ -119,7 +83,6 @@ export default class LoginView extends React.Component {
                   >
                     <Button
                       fullWidth
-                      onClick={handleSubmit}
                       size="large"
                       variant="contained"
                     >
@@ -140,26 +103,20 @@ export default class LoginView extends React.Component {
                   </Typography>
                 </Box>
                 <TextField
-                  error={Boolean(touched.username && errors.username)}
                   fullWidth
-                  helperText={touched.username && errors.username}
                   label="Username"
                   margin="normal"
                   name="username"
-                  onBlur={handleBlur}
-                  onChange={(e) => this.setState({username:e.target.value})}
+                  onChange={(text) => this.setState({username:text.target.value})}
                   type="username"
                   value={username}
                   variant="outlined"
                 />
                 <TextField
-                  error={Boolean(touched.password && errors.password)}
                   fullWidth
-                  helperText={touched.password && errors.password}
                   label="Password"
                   margin="normal"
                   name="password"
-                  onBlur={handleBlur}
                   onChange={(text) => {this.setState({password:text.target.value})}}
                   type="password"
                   value={password}
@@ -168,7 +125,6 @@ export default class LoginView extends React.Component {
                 <Box my={2}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
                     fullWidth
                     size="large"
                     type="submit"
@@ -192,9 +148,6 @@ export default class LoginView extends React.Component {
                     Sign up
                   </Link>
                 </Typography>
-              </form>
-            )}
-          </Formik>
         </Container>
       </Box>
     </Page>
