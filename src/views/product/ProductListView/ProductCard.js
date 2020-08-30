@@ -1,89 +1,88 @@
-import React, {useState} from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import {
-  Avatar,
-  Box,
-  Card,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import React, { useState, useEffect } from 'react';
+import DataTable, { memoize } from 'react-data-table-component';
+import { GET } from 'src/api/caller';
+import { GET_ALL_BOOK } from 'src/api/endpoint';
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
-  avatar: {
-    marginRight: theme.spacing(2)
+function ProductCard() {
+  const [books, setBooks] = useState([{bookname:"booooook"}]);
+
+  const columns = memoize( clickHandler => [
+    {
+      name: 'Id',
+      selector: 'id',
+      sortabel: true
+    },
+    {
+      name: 'Book Name',
+      selector: 'bookname',
+      sortabel: true
+    },
+    {
+      name: 'Price',
+      selector: 'price',
+      sortabel: true
+    },
+    {
+      name: 'Author',
+      selector: 'auhtor',
+      sortabel: true
+    },
+    {
+      name: 'CategoryId',
+      selector: 'categoryid',
+      sortabel: true
+    },
+    {
+      name: 'Quantity',
+      selector: 'quantity',
+      sortabel: true
+    },
+    {
+      name: 'Details',
+      selector: 'details',
+      sortabel: true
+    },
+    {
+      name: 'Create At',
+      selector: 'createAt',
+      sortabel: true
+    },
+    {
+      name: 'Update At',
+      selector: 'updateAt',
+      sortabel: true
+    },
+    {
+      name: 'Status Active',
+      selector: 'statusActive',
+      sortabel: true
+    },
+    {
+      cell:(row) => <button onClick={clickHandler} id={row.ID}>Action</button>,
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ])
+
+  const getAllBook = async () =>{
+    await GET(GET_ALL_BOOK, {},{}).then((res) =>  {
+      setBooks(res);
+    })
   }
-}));
-
-const ProductCard = ({ className, customers, ...rest }) => {
-
-
-  return (
-    <Card
-    // className={clsx(classes.root)}
-    {...rest}
-  >
-    <PerfectScrollbar>
-      <Box>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                Id
-              </TableCell>
-              <TableCell>
-                Book Name
-              </TableCell>
-              <TableCell>
-                Price
-              </TableCell>
-              <TableCell>
-                Author
-              </TableCell>
-              <TableCell>
-                 Category Name
-              </TableCell>
-              <TableCell>
-                Quantity
-              </TableCell>
-              <TableCell>
-                Detail
-              </TableCell>
-              <TableCell>
-                Create At
-              </TableCell>
-              <TableCell>
-                Modify At
-              </TableCell>
-              <TableCell>
-                Status Active
-              </TableCell>
-
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          
-              <TableRow>
-                
-              </TableRow>
-            
-          </TableBody>
-        </Table>
-      </Box>
-    </PerfectScrollbar>
-  </Card>
+  useEffect(()=>{
+    getAllBook();
+    console.log('show')
+  })
+  return(
+    <div>
+        <DataTable
+            title = "Book Manager"
+            columns={columns}
+            data={books}
+            pagination={true}
+            subHeader={true}/>
+    </div>
   );
-  }
-
+}
 export default ProductCard;
